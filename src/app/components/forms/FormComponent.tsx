@@ -1,25 +1,27 @@
 "use client";
-import { useState } from "react";
 
-export default function FormComponent() {
-  const [formData, setFormData] = useState({
-    session: "",
-  });
+interface Climb {
+  climb: string;
+  grade: number;
+}
+interface FormProps {
+  setSession: (string: string) => void;
+  climbs: { climb: string; grade: number }[];
+  setClimbs: (data: Climb) => void;
+}
 
-  const [climbs, setClimbs] = useState<{ climb: string; grade: number }[]>([]);
-
+export default function FormComponent({
+  setSession,
+  climbs,
+  setClimbs,
+}: FormProps) {
   function onSubmit(e: any) {
     e.preventDefault();
 
-    setFormData({ session: e.target.session.value });
-    setClimbs((climbs) => [
-      ...climbs,
-      { climb: e.target.climb.value, grade: e.target.grade.value },
-    ]);
+    setSession(e.target.session.value);
+    setClimbs({ climb: e.target.climb.value, grade: e.target.grade.value });
   }
 
-  console.log(formData);
-  console.log("these climbs: ", climbs);
   return (
     <form className="w-full lg:w-1/2" onSubmit={onSubmit}>
       <div className="my-4">
