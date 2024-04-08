@@ -6,15 +6,10 @@ interface Climb {
 }
 interface FormProps {
   setSession: (string: string) => void;
-  climbs: { climb: string; grade: number }[];
   setClimbs: (data: Climb) => void;
 }
 
-export default function FormComponent({
-  setSession,
-  climbs,
-  setClimbs,
-}: FormProps) {
+export default function FormComponent({ setSession, setClimbs }: FormProps) {
   function onSubmit(e: any) {
     e.preventDefault();
 
