@@ -8,7 +8,6 @@ export default function NewSession() {
     session: "",
   });
   const handlerSessionName = (data: string) => {
-    console.log("ping");
     setSession({ session: data });
   };
 
@@ -20,10 +19,24 @@ export default function NewSession() {
       { climb: data.climb, grade: data.grade },
     ]);
   };
-  var climbNames = climbs.map(function (i, idx) {
+
+  const handleRemove = (event: any) => {
+    const index = Number(event.target.name);
+    const newArray = climbs.filter((climb, i) => i !== index);
+    setClimbs(newArray);
+  };
+
+  const climbNames = climbs.map(function (i, idx) {
     return (
-      <div key={idx} className="climbName">
+      <div key={`${idx}-${i.climb}`}>
         {i.climb}, {i.grade}
+        <button
+          className="bg-red-500 hover:bg-red-700 text-xs text-white font-bold py-2 px-4 rounded"
+          onClick={(event) => handleRemove(event)}
+          name={`${idx}`}
+        >
+          Remove
+        </button>
       </div>
     );
   });
@@ -38,7 +51,9 @@ export default function NewSession() {
         climbs={climbs}
         setClimbs={handleAddClimbs}
       />
-      <div>{session.session}</div>
+      <h2>
+        Session Name: <b>{session.session}</b>
+      </h2>
       {climbNames}
       <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Submit

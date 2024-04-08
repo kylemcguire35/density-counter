@@ -46,11 +46,6 @@ export default function FormComponent({
               name="grade"
             />
           </div>
-          <div className="pl-2 flex items-end">
-            <button className="bg-red-500 hover:bg-red-700 text-xs text-white font-bold py-2 px-4 rounded">
-              Remove
-            </button>
-          </div>
         </div>
         <div className="pt-2">
           <button
