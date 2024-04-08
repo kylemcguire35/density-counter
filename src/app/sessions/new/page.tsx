@@ -1,7 +1,13 @@
 export default function NewSession() {
-    return (
+  return (
+    <div className="text-center py-4">
+      <h1 className="text-4xl font-bold">Create Session</h1>
+      <form>
         <div>
-            New Session Page
+            <label>Session Name:</label>
+            <input/>
         </div>
-    )
+      </form>
+    </div>
+  );
 }

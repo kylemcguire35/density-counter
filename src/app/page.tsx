@@ -1,9 +1,9 @@
-import StartSessionButton from "./components/buttons/StartSessionBtn";
+import NewSessionButton from "./components/buttons/NewSessionBtn";
 
 export default function Home() {
   return (
     <main className="text-center py-4">
-      <StartSessionButton/>
+      <NewSessionButton/>
     </main>
   );
 }
