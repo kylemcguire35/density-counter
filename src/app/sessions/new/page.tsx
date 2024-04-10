@@ -3,8 +3,10 @@
 import CreateSessionButton from "@/app/components/buttons/StartSessionBtn";
 import FormComponent from "@/app/components/forms/FormComponent";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export default function NewSession() {
+  const id = uuidv4();
   const [session, setSession] = useState({
     session: "",
     rounds: 0,
@@ -34,6 +36,7 @@ export default function NewSession() {
   };
 
   const handleSubmit = () => {
+    console.log("session id: ", id);
     console.log("session is: ", session, climbs);
   };
 
@@ -70,7 +73,7 @@ export default function NewSession() {
       >
         Submit
       </button>
-      <CreateSessionButton />
+      <CreateSessionButton id={id} />
     </div>
   );
 }
