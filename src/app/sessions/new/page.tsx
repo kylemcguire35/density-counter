@@ -1,14 +1,21 @@
 "use client";
 
+import CreateSessionButton from "@/app/components/buttons/StartSessionBtn";
 import FormComponent from "@/app/components/forms/FormComponent";
 import { useState } from "react";
 
 export default function NewSession() {
   const [session, setSession] = useState({
     session: "",
+    rounds: 0,
+    time: 0,
   });
-  const handlerSessionName = (data: string) => {
-    setSession({ session: data });
+  const handlerSessionName = (
+    data: string,
+    rounds: number,
+    minutes: number
+  ) => {
+    setSession({ session: data, rounds: rounds, time: minutes });
   };
 
   const [climbs, setClimbs] = useState<{ climb: string; grade: number }[]>([]);
@@ -24,6 +31,10 @@ export default function NewSession() {
     const index = Number(event.target.name);
     const newArray = climbs.filter((climb, i) => i !== index);
     setClimbs(newArray);
+  };
+
+  const handleSubmit = () => {
+    console.log("session is: ", session, climbs);
   };
 
   const climbNames = climbs.map(function (i, idx) {
@@ -49,12 +60,17 @@ export default function NewSession() {
         setClimbs={handleAddClimbs}
       />
       <h2>
-        Session Name: <b>{session.session}</b>
+        Session Name: <b>{session.session}</b> Rounds: <b>{session.rounds}</b>{" "}
+        Minutes: <b>{session.time}</b>
       </h2>
       {climbNames}
-      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <button
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        onClick={handleSubmit}
+      >
         Submit
       </button>
+      <CreateSessionButton />
     </div>
   );
 }
