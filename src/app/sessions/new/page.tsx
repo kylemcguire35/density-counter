@@ -2,6 +2,7 @@
 
 import CreateSessionButton from "@/app/components/buttons/StartSessionBtn";
 import FormComponent from "@/app/components/forms/FormComponent";
+import handlePost from "@/pages/api/post";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -35,9 +36,17 @@ export default function NewSession() {
     setClimbs(newArray);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("session id: ", id);
     console.log("session is: ", session, climbs);
+    const data = {
+      id: id,
+      name: session.session,
+      round: session.rounds,
+      time: session.time,
+      climb: climbs,
+    };
+    const user = await handlePost(data);
   };
 
   const climbNames = climbs.map(function (i, idx) {
