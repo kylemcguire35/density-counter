@@ -2,7 +2,6 @@
 
 import CreateSessionButton from "@/app/components/buttons/StartSessionBtn";
 import FormComponent from "@/app/components/forms/FormComponent";
-import handlePost from "@/pages/api/post";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -46,7 +45,11 @@ export default function NewSession() {
       time: session.time,
       climb: climbs,
     };
-    const user = await handlePost(data);
+    await fetch(`/api/post`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
   };
 
   const climbNames = climbs.map(function (i, idx) {
