@@ -37,7 +37,6 @@ export default function NewSession() {
 
   const handleSubmit = async () => {
     console.log("session id: ", id);
-    console.log("session is: ", session, climbs);
     const data = {
       id: id,
       name: session.session,
@@ -45,6 +44,7 @@ export default function NewSession() {
       time: session.time,
       climb: climbs,
     };
+    console.log("session data: ", session, data);
     await fetch(`/api/post`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
