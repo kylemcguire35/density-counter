@@ -1,6 +1,6 @@
 "use client";
-import { getStaticProps } from "@/pages/api/get";
 import { useEffect, useState } from "react";
+import LayoutDropdown from "../dropdown/Layouts";
 
 interface Climb {
   climb: string;
@@ -12,23 +12,25 @@ interface FormProps {
 }
 
 export default function FormComponent({ setSession, setClimbs }: FormProps) {
-  const [layout, setLayout] = useState([]);
-
-  async function runQuery() {
-    // Set the loading true.
-    // setLoading(true)
-
-    // Manually query your queries.
-    const data = await fetch(`/api/get`, {
-      method: "GET",
-    });
-
-    console.log(data);
-  }
+  const [layouts, setLayout] = useState([] as {}[]);
+  const [chosenLayout, setChosen] = useState(0);
 
   useEffect(() => {
-    runQuery();
+    const fetchData = async () => {
+      await fetch("/api/get")
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setLayout(data);
+        });
+    };
+
+    fetchData();
   }, []);
+
+  const handleChooseLayout = (e: any) => {
+    // console.log("layout number:", e);
+    setChosen(e);
+  };
 
   function onSubmit(e: any) {
     e.preventDefault();
@@ -58,32 +60,37 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
         <input className="border w-full py-1 px-3" type="number" name="time" />
       </div>
       <div className="flex flex-col my-4">
-        <div className="flex flex-row">
-          <div className="w-5/6 pr-2">
-            <label>Climb Name: </label>
-            <input
-              className="border w-full py-1 px-3"
-              type="text"
-              name="climb"
-            />
-          </div>
-          <div className="w-1/6 pl-2">
-            <label>Grade: </label>
-            <input
-              className="border w-full py-1 px-3"
-              type="number"
-              name="grade"
-            />
-          </div>
-        </div>
-        <div className="pt-2">
-          <button
-            className="bg-green-500 hover:bg-green-700 text-xs text-white font-bold py-2 px-4 rounded"
-            type="submit"
-          >
-            Add Climb
-          </button>
-        </div>
+        <LayoutDropdown layouts={layouts} handleChange={handleChooseLayout} />
+        {chosenLayout !== 0 && (
+          <>
+            <div className="flex flex-row">
+              <div className="w-5/6 pr-2">
+                <label>Climb Name: </label>
+                <input
+                  className="border w-full py-1 px-3"
+                  type="text"
+                  name="climb"
+                />
+              </div>
+              <div className="w-1/6 pl-2">
+                <label>Grade: </label>
+                <input
+                  className="border w-full py-1 px-3"
+                  type="number"
+                  name="grade"
+                />
+              </div>
+            </div>
+            <div className="pt-2">
+              <button
+                className="bg-green-500 hover:bg-green-700 text-xs text-white font-bold py-2 px-4 rounded"
+                type="submit"
+              >
+                Add Climb
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </form>
   );
