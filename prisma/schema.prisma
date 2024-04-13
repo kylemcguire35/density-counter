@@ -8,9 +8,54 @@ datasource db {
 }
 
 model Session {
-  id    String     @id
+  id    String @id
   name  String
   round Int
   time  Int
   climb Json[]
+}
+
+model climbs {
+  uuid            String  @id
+  layout_id       Int
+  setter_id       Int
+  setter_username String
+  name            String
+  description     String? @default("")
+  hsm             Int?
+  edge_left       Int
+  edge_right      Int
+  edge_bottom     Int
+  edge_top        Int
+  angle           Int?
+  frames_count    Int     @default(1)
+  frames_pace     Int     @default(0)
+  frames          String?
+  is_draft        Boolean @default(false)
+  is_listed       Boolean
+  created_at      String
+  layouts         layouts @relation(fields: [layout_id], references: [id], onDelete: Cascade)
+}
+
+model layouts {
+  id                Int      @id
+  product_id        Int
+  name              String
+  instagram_caption String?
+  is_mirrored       Boolean?
+  is_listed         Boolean?
+  password          String?
+  created_at        String?
+  climbs            climbs[]
+  products          products @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
+
+model products {
+  id                 Int       @id
+  name               String
+  is_listed          Boolean
+  password           String?
+  min_count_in_frame Int?
+  max_count_in_frame Int?
+  layouts            layouts[]
 }
