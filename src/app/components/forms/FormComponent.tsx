@@ -1,4 +1,6 @@
 "use client";
+import { getStaticProps } from "@/pages/api/get";
+import { useEffect, useState } from "react";
 
 interface Climb {
   climb: string;
@@ -10,6 +12,24 @@ interface FormProps {
 }
 
 export default function FormComponent({ setSession, setClimbs }: FormProps) {
+  const [layout, setLayout] = useState([]);
+
+  async function runQuery() {
+    // Set the loading true.
+    // setLoading(true)
+
+    // Manually query your queries.
+    const data = await fetch(`/api/get`, {
+      method: "GET",
+    });
+
+    console.log(data);
+  }
+
+  useEffect(() => {
+    runQuery();
+  }, []);
+
   function onSubmit(e: any) {
     e.preventDefault();
 

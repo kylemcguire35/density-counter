@@ -1,16 +1,12 @@
 import prisma from "@/app/lib/prisma";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { GetStaticProps } from "next";
 
-// POST /api/post
-export default async function handle(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler() {
+  const feed = await prisma.layouts.findMany({});
   try {
-    const result = await prisma.session.create({
-      data: data,
-    });
-    return res.status(201).json(result);
+    return {
+      props: { feed },
+    };
   } catch (err) {
     console.log("error: ", err);
   }
