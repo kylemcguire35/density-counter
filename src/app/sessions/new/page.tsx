@@ -74,10 +74,10 @@ export default function NewSession() {
         setSession={handlerSessionName}
         setClimbs={handleAddClimbs}
       />
-      <h2>
+      {/* <h2>
         Session Name: <b>{session.session}</b> Rounds: <b>{session.rounds}</b>{" "}
         Minutes: <b>{session.time}</b>
-      </h2>
+      </h2> */}
       {climbNames}
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"

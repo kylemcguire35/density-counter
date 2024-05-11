@@ -13,10 +13,15 @@ export default function LayoutDropdown({
   };
   return (
     <div className="relative inline-block text-left">
-      <select onChange={handleOptionChange}>
-        <option value="⬇️ Select a layout ⬇️"> -- Select a layout -- </option>
+      <select onChange={handleOptionChange} key={Math.random()}>
+        <option value="⬇️ Select a layout ⬇️" key={Math.random()}>
+          {" "}
+          -- Select a layout --{" "}
+        </option>
         {layouts.map((layout) => (
-          <option value={layout.id}>{layout.name}</option>
+          <option value={layout.id} key={layout.id}>
+            {layout.name}
+          </option>
         ))}
       </select>
     </div>

@@ -1,4 +1,8 @@
 export interface Climb {
   climb: string;
-  grade: number;
+  grade: string;
+}
+
+export interface Grades {
+  [number: number]: string;
 }

@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import LayoutDropdown from "../dropdown/Layouts";
-import SearchInput from "../input/SearchInput";
 import { Climb } from "@/app/_models/interface";
+import AutoComplete from "../input/AutoComplete";
 
 interface Names {
   name: string;
+  display_difficulty: number;
 }
 interface FormProps {
   setSession: (string: string, round: number, time: number) => void;
@@ -19,6 +20,7 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState([] as Names[]);
   const [show, setShow] = useState(false);
+  const [grade_dict, setDict] = useState({} as any);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,12 +35,29 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
   }, []);
 
   useEffect(() => {
-    // console.log("LAYOUT CHOOSE: ", chosenLayout);
+    const fetchGrades = async () => {
+      await fetch("/api/get/grades")
+        .then((res) => res.json())
+        .then(({ data }) => {
+          const graded = {} as any;
+
+          for (let i = 0; i < data.length; i++) {
+            graded[data[i].difficulty] = data[i].boulder_name;
+          }
+          setDict(graded);
+        });
+    };
+
+    fetchGrades();
+  }, []);
+
+  useEffect(() => {
     if (chosenLayout > 0) {
       fetch(`/api/get/${chosenLayout}`)
         .then((res) => res.json())
-        .then(({ data }) => {
-          setClimbNames(data);
+        .then(({ climbs }) => {
+          setClimbNames(climbs);
+          setFiltered(climbs.splice(0, 10));
         });
     }
   }, [chosenLayout]);
@@ -61,10 +80,15 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
 
   const handleSearch = (e: string) => {
     const filter = climbNames.filter((x) => x.name.includes(e));
-    console.log(filter);
     setSearch(e);
     setShow(true);
     setFiltered(filter.slice(0, 10));
+  };
+
+  const handleAddClimb = (name: string, difficulty: string) => {
+    console.log(name, difficulty);
+
+    setClimbs({ climb: name, grade: grade_dict[`${difficulty}`] });
   };
 
   return (
@@ -89,15 +113,16 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
           <>
             <div className="flex flex-row">
               <div className="w-5/6 pr-2">
-                <SearchInput
+                <AutoComplete
                   label="Climb Name: "
                   name="climb"
                   options={filtered}
                   handleSearch={handleSearch}
-                  value={search ? search : "Climb "}
+                  value={search && search}
+                  placeholder={"Climb"}
                   showOptions={show}
                   setShowOptions={setShow}
-                  addClimb={setClimbs}
+                  addClimb={handleAddClimb}
                 />
               </div>
               <div className="w-1/6 pl-2">

@@ -7,14 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Session {
-  id    String @id
-  name  String
-  round Int
-  time  Int
-  climb Json[]
-}
-
 model climbs {
   uuid            String  @id
   layout_id       Int
@@ -58,4 +50,33 @@ model products {
   min_count_in_frame Int?
   max_count_in_frame Int?
   layouts            layouts[]
+}
+
+model Session {
+  id    String @id
+  name  String
+  round Int
+  time  Int
+  climb Json[]
+}
+
+model climb_stats {
+  climb_uuid           String
+  angle                Int
+  display_difficulty   Float
+  benchmark_difficulty Float?
+  ascensionist_count   Int
+  difficulty_average   Float
+  quality_average      Float
+  fa_username          String
+  fa_at                String
+
+  @@id([climb_uuid, angle])
+}
+
+model difficulty_grades {
+  difficulty   Int     @id
+  boulder_name String
+  route_name   String
+  is_listed    Boolean
 }
