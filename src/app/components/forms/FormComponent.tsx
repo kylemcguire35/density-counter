@@ -1,10 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
 import LayoutDropdown from "../dropdown/Layouts";
+import SearchInput from "../input/SearchInput";
+import { Climb } from "@/app/_models/interface";
 
-interface Climb {
-  climb: string;
-  grade: number;
+interface Names {
+  name: string;
 }
 interface FormProps {
   setSession: (string: string, round: number, time: number) => void;
@@ -14,6 +15,10 @@ interface FormProps {
 export default function FormComponent({ setSession, setClimbs }: FormProps) {
   const [layouts, setLayout] = useState([] as {}[]);
   const [chosenLayout, setChosen] = useState(0);
+  const [climbNames, setClimbNames] = useState([] as Names[]);
+  const [search, setSearch] = useState("");
+  const [filtered, setFiltered] = useState([] as Names[]);
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +31,17 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
 
     fetchData();
   }, []);
+
+  useEffect(() => {
+    // console.log("LAYOUT CHOOSE: ", chosenLayout);
+    if (chosenLayout > 0) {
+      fetch(`/api/get/${chosenLayout}`)
+        .then((res) => res.json())
+        .then(({ data }) => {
+          setClimbNames(data);
+        });
+    }
+  }, [chosenLayout]);
 
   const handleChooseLayout = (e: any) => {
     // console.log("layout number:", e);
@@ -42,6 +58,14 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
     );
     setClimbs({ climb: e.target.climb.value, grade: e.target.grade.value });
   }
+
+  const handleSearch = (e: string) => {
+    const filter = climbNames.filter((x) => x.name.includes(e));
+    console.log(filter);
+    setSearch(e);
+    setShow(true);
+    setFiltered(filter.slice(0, 10));
+  };
 
   return (
     <form className="w-full lg:w-1/2" onSubmit={onSubmit}>
@@ -65,11 +89,15 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
           <>
             <div className="flex flex-row">
               <div className="w-5/6 pr-2">
-                <label>Climb Name: </label>
-                <input
-                  className="border w-full py-1 px-3"
-                  type="text"
+                <SearchInput
+                  label="Climb Name: "
                   name="climb"
+                  options={filtered}
+                  handleSearch={handleSearch}
+                  value={search ? search : "Climb "}
+                  showOptions={show}
+                  setShowOptions={setShow}
+                  addClimb={setClimbs}
                 />
               </div>
               <div className="w-1/6 pl-2">
