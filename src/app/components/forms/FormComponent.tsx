@@ -1,13 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import LayoutDropdown from "../dropdown/Layouts";
-import { Climb } from "@/app/_models/interface";
+import { Climb, Names } from "@/app/_models/interface";
 import AutoComplete from "../input/AutoComplete";
 
-interface Names {
-  name: string;
-  display_difficulty: number;
-}
 interface FormProps {
   setSession: (string: string, round: number, time: number) => void;
   setClimbs: (data: Climb) => void;
@@ -26,9 +22,7 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
     const fetchData = async () => {
       await fetch("/api/get")
         .then((res) => res.json())
-        .then(({ data }) => {
-          setLayout(data);
-        });
+        .then(({ data }) => setLayout(data));
     };
 
     fetchData();
@@ -56,8 +50,9 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
       fetch(`/api/get/${chosenLayout}`)
         .then((res) => res.json())
         .then(({ climbs }) => {
+          console.log("GRAB: ", climbs);
           setClimbNames(climbs);
-          setFiltered(climbs.splice(0, 10));
+          setFiltered(climbs.slice(0, 10));
         });
     }
   }, [chosenLayout]);
@@ -86,9 +81,10 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
   };
 
   const handleAddClimb = (name: string, difficulty: string) => {
-    console.log(name, difficulty);
-
-    setClimbs({ climb: name, grade: grade_dict[`${difficulty}`] });
+    setClimbs({
+      climb: name,
+      grade: grade_dict[`${Math.round(Number(difficulty))}`],
+    });
   };
 
   return (
@@ -118,19 +114,11 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
                   name="climb"
                   options={filtered}
                   handleSearch={handleSearch}
-                  value={search && search}
+                  value={search}
                   placeholder={"Climb"}
                   showOptions={show}
                   setShowOptions={setShow}
                   addClimb={handleAddClimb}
-                />
-              </div>
-              <div className="w-1/6 pl-2">
-                <label>Grade: </label>
-                <input
-                  className="border w-full py-1 px-3"
-                  type="number"
-                  name="grade"
                 />
               </div>
             </div>

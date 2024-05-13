@@ -31,6 +31,8 @@ export default function AutoComplete({
     setShowOptions(false);
   };
 
+  console.log("options", options);
+
   return (
     <>
       <label>{label}</label>
