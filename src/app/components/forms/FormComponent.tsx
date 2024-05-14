@@ -50,7 +50,6 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
       fetch(`/api/get/${chosenLayout}`)
         .then((res) => res.json())
         .then(({ climbs }) => {
-          console.log("GRAB: ", climbs);
           setClimbNames(climbs);
           setFiltered(climbs.slice(0, 10));
         });
@@ -58,7 +57,6 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
   }, [chosenLayout]);
 
   const handleChooseLayout = (e: any) => {
-    // console.log("layout number:", e);
     setChosen(e);
   };
 
@@ -74,7 +72,7 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
   }
 
   const handleSearch = (e: string) => {
-    const filter = climbNames.filter((x) => x.name.includes(e));
+    const filter = climbNames.filter((x) => x.name.toLowerCase().includes(e));
     setSearch(e);
     setShow(true);
     setFiltered(filter.slice(0, 10));
@@ -85,6 +83,7 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
       climb: name,
       grade: grade_dict[`${Math.round(Number(difficulty))}`],
     });
+    setSearch("");
   };
 
   return (
@@ -111,14 +110,13 @@ export default function FormComponent({ setSession, setClimbs }: FormProps) {
               <div className="w-5/6 pr-2">
                 <AutoComplete
                   label="Climb Name: "
-                  name="climb"
                   options={filtered}
                   handleSearch={handleSearch}
                   value={search}
                   placeholder={"Climb"}
                   showOptions={show}
                   setShowOptions={setShow}
-                  addClimb={handleAddClimb}
+                  select={handleAddClimb}
                 />
               </div>
             </div>

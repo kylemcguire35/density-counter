@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface InputProps {
   label: string;
-  name: string;
   handleSearch: (e: string) => void;
-  addClimb: (name: string, difficulty: string) => void;
+  select: (name: string, difficulty: string) => void;
   value: string;
   options: any[];
   showOptions: boolean;
@@ -14,35 +13,52 @@ interface InputProps {
 
 export default function AutoComplete({
   label,
-  name,
   handleSearch,
   value,
   options,
   showOptions,
   setShowOptions,
-  addClimb,
+  select,
   placeholder,
 }: InputProps) {
   const [cursor, setCursor] = useState(-1);
+  const ref = useRef<HTMLInputElement>(null);
 
-  const select = (option: { name: string; display_difficulty: string }) => {
-    console.log("SELECTED: ", option);
-    addClimb(option.name, option.display_difficulty);
+  const handleSelect = (option: {
+    name: string;
+    display_difficulty: string;
+  }) => {
+    select(option.name, option.display_difficulty);
     setShowOptions(false);
   };
 
-  console.log("options", options);
+  useEffect(() => {
+    const listener = (e: any) => {
+      if (!ref.current?.contains(e.target)) {
+        setShowOptions(false);
+        setCursor(-1);
+      }
+    };
+
+    document.addEventListener("click", listener);
+    document.addEventListener("focusin", listener);
+    return () => {
+      document.removeEventListener("click", listener);
+      document.removeEventListener("focusin", listener);
+    };
+  }, []);
 
   return (
     <>
       <label>{label}</label>
       <input
         type="text"
-        className="border w-full py-1 px-3"
+        className="searchInput border w-full py-1 px-3"
         value={value}
         onChange={(e) => handleSearch(e.target.value)}
         onFocus={() => setShowOptions(true)}
         placeholder={placeholder}
+        ref={ref}
       />
 
       <ul
@@ -68,7 +84,7 @@ export default function AutoComplete({
               <li
                 className={className}
                 key={option.name}
-                onClick={() => select(option)}
+                onClick={() => handleSelect(option)}
               >
                 {option.name}
               </li>
